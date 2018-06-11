@@ -19,41 +19,41 @@ const mc = mysql.createConnection({
 });
 
 //mysql connect
-mc.connect(function(err){
+mc.connect(err=>{
     if(err) throw err;
     console.log('Database Successfully Connected');
 });
 
 //defalt router
-app.get('/',function(req,res){
+app.get('/',(req,res)=>{
     return res.send({error:true,massege:'hello'})
 });
 
 //send all todos 
-app.get('/todos',function(req,res){
-    mc.query('SELECT * FROM tasks',function(err,results,fields){
+app.get('/todos',(req,res)=>{
+    mc.query('SELECT * FROM tasks',(err,results,fields)=>{
         if(err) throw err;
         return res.status(200).send({error:false,dara:results,massege:'todos list'});
     });
 });
 
 //retrieve todos with id
-app.get('/todos/:id',function(req,res){
+app.get('/todos/:id',(req,res)=>{
     let tast_id = req.params.id;
 
     if(!tast_id){
         res.status(404).send({error:true,massege:"please provide a task id"});
     }
-    mc.query('SELECT * FROM tasks WHERE id=?',tast_id,function(error,results,fields){
+    mc.query('SELECT * FROM tasks WHERE id=?',tast_id,(error,results,fields)=>{
         if(error) throw error;
         return res.status(200).send({error:false,data:results,massege:'todo list'})
     });
 });
 
 //search from todos tith bug in there names
-app.get('/todos/search/:keyword',function(req,res){
+app.get('/todos/search/:keyword',(req,res)=>{
     let key = req.params.keyword;
-    mc.query('SELECT * FROM tasks WHERE task LIKE ?',['%'+key+'%'],function(error,results,fields){
+    mc.query('SELECT * FROM tasks WHERE task LIKE ?',['%'+key+'%'],(error,results,fields)=>{
         if(error) throw error;
         return res.send({error:false,data:results,massege:'todo List'});
 
@@ -66,7 +66,7 @@ app.post('/todo',(req,res)=>{
         res.send({error:true,massege:"Task is not set"});
     }
 
-    mc.query('INSERT INTO tasks SET ?',{task: task.task},function(error,results,fields){
+    mc.query('INSERT INTO tasks SET ?',{task: task.task},(error,results,fields)=>{
         if(error) throw error;
         return res.send({error:false,data:results,massege:'new task created'});
     });
@@ -100,6 +100,6 @@ app.put("/todo",(req,res)=>{
 });
 
 //create server
-app.listen(8080,function(req,res){
+app.listen(8080,(req,res)=>{
     console.log('You are listening to the port 8080');
 });
